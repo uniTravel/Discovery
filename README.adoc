@@ -1,0 +1,27 @@
+:toc: left
+:toc-title: 目录
+:icons: font
+
+ifndef::toclevels[]
+:toclevels: 4
+endif::[]
+
+
+= = Discovery
+
+[TIP]
+====
+[.lead]
+基于 VS Code 的学习笔记，内容包括:
+
+* Python
+* 机器学习
+====
+
+:leveloffset: +1
+
+include::{docdir}/Python/Python.adoc[]
+
+include::{docdir}/ML/ML.adoc[]
+
+:leveloffset: -1

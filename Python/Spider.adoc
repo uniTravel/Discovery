@@ -1,0 +1,53 @@
+:toc: left
+:toc-title: 目录
+:icons: font
+:experimental:
+
+
+= 爬虫
+
+== table 表单数据
+
+[source, python]
+----
+include::{docdir}/Python/Spider/table.py[]
+----
+
+[NOTE]
+====
+可先检查目标数据是否 table 表单：
+
+. 先打开目标网页；
+. 然后用 kbd:[F12] 打开开发人员工具，检查表单是否 table 类型。
+====
+
+
+== 文章转存成文件
+
+[source, python]
+----
+include::{docdir}/Python/Spider/article.py[]
+
+# 转存单篇文章的例子
+url = 'http://www.qingxin.gov.cn/zfxxgk/zfgzbg/content/post_1344062.html'
+path = '//div[@class="article-content"]//p'
+folder = get_folder('QingXin')
+to_file(folder + "工作报告.txt", url, path)
+
+# 转存一批文章的例子
+url = "http://www.qingxin.gov.cn/zfxxgk/zfgzbg/"
+titles = article_attribute(url, '//div[@class="channel_list"]/ul/li/a/@title')
+urls = article_attribute(url, '//div[@class="channel_list"]/ul/li/a/@href')
+path = '//div[@class="article-content"]//p'
+folder = get_folder('QingXin')
+for title, url in zip(titles, urls):
+    name = folder + title + '.txt'
+    to_file(name, url, path)
+----
+
+[NOTE]
+====
+* 函数定义主要考虑两种场景：一是各段落用特定标记包装；二是各段落在同一个标记内，通过换行符换行。
+* 提取内容主要利用 lxml 包的 xpath 函数，参考 link:https://www.w3cschool.cn/lxml/[lxml 中文文档]。
+* 分页文章可将 to_file 函数的 mode 属性设为 'a' ，以添加的模式写入文档。
+====
