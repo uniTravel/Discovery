@@ -13,7 +13,7 @@ def article_attribute(url: str, path: str) -> List[str]:
     :param path: xpath函数的查询参数
     :return: 文章标题或URL
     """
-    res = etree.HTML(requests.get(url).text)
+    res = etree.HTML(requests.get(url).text, etree.HTMLParser())
     return res.xpath(path)
 
 
@@ -24,7 +24,7 @@ def article_content(url: str, path: str) -> List[str]:
     :param path: xpath函数的查询参数
     :return: 文章内容列表
     """
-    res = etree.HTML(requests.get(url).text)
+    res = etree.HTML(requests.get(url).text, etree.HTMLParser())
     content = res.xpath(path)
     for i, v in enumerate(content):
         s = normalize("NFKD", ''.join(v.itertext())).replace(' ', '')

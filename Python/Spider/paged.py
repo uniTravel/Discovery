@@ -34,7 +34,7 @@ class Paged:
                  limit: int = 100,
                  headers: dict = {
                      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36 Edg/95.0.1020.38"},
-                 proxies: dict = None) -> None:
+                 proxies: dict | None = None) -> None:
         """构造函数
 
         :param url: 目标网站
@@ -53,9 +53,9 @@ class Paged:
         self.key = key
         self.limit = limit
         self.proxies = proxies
-        self.args = {'headers': headers, mode.value: payload}
+        self.args: dict = {'headers': headers, mode.value: payload}
 
-    def locate(self, pageNo: int) -> dict:
+    def locate(self, pageNo: int | None) -> dict:
         """传入页码更新参数字典
 
         :param pageNo: 页码的值
@@ -74,7 +74,7 @@ class Paged:
                                proxies=self.proxies, **self.args)
         return f(res.json())
 
-    def get(self, f: Callable[[dict], pd.DataFrame], pageNo: int = None) -> pd.DataFrame:
+    def get(self, f: Callable[[dict], pd.DataFrame], pageNo: int | None = None) -> pd.DataFrame:
         """同步方式获取单页DataFrame
 
         :param f: 网站响应的json串提取DataFrame的方法

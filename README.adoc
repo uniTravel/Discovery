@@ -7,7 +7,7 @@ ifndef::toclevels[]
 endif::[]
 
 
-= = Discovery
+= Discovery
 
 [TIP]
 ====

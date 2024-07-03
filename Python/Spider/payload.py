@@ -1,4 +1,3 @@
-import json
 import requests
 import asyncio
 import aiohttp
@@ -13,7 +12,7 @@ cols = ['项目名称', '批准号', '项目类别', '依托单位', '项目负�
 pageSize = 10
 
 
-def payload(code: str, typ: str, year: str, pageNum: int) -> json:
+def payload(code: str, typ: str, year: str, pageNum: int) -> dict:
     """构造请求负载
 
     :param code: 申请代码
@@ -45,7 +44,7 @@ def payload(code: str, typ: str, year: str, pageNum: int) -> json:
             "complete": "true"}
 
 
-def total(proxies: json, typ: str, year: str, code: str = 'E07') -> int:
+def total(proxies: dict, typ: str, year: str, code: str = 'E07') -> int:
     """获取满足条件的项目总数
 
     :param proxies: 代理IP，用于突破防爬
@@ -59,7 +58,7 @@ def total(proxies: json, typ: str, year: str, code: str = 'E07') -> int:
     return res.json()["data"]['iTotalRecords']
 
 
-def paged(proxies: json, typ: str, year: str, pageNum: int = 0, code: str = 'E07') -> pd.DataFrame:
+def paged(proxies: dict, typ: str, year: str, pageNum: int = 0, code: str = 'E07') -> pd.DataFrame:
     """同步方式分页获取结题项目数据
 
     :param proxies: 代理IP，用于突破防爬
@@ -76,7 +75,7 @@ def paged(proxies: json, typ: str, year: str, pageNum: int = 0, code: str = 'E07
     return df
 
 
-def fetch(proxies: json, typ: str, year: str, code: str = 'E07') -> pd.DataFrame:
+def fetch(proxies: dict, typ: str, year: str, code: str = 'E07') -> pd.DataFrame:
     """同步方式获取结题项目数据
 
     :param proxies: 代理IP，用于突破防爬
@@ -103,12 +102,13 @@ async def apaged(client: aiohttp.client.ClientSession, proxy: str, typ: str, yea
     """
     data = payload(code, typ, year, pageNum)
     async with client.post(url, headers=headers, json=data, proxy=proxy) as res:
-        df = pd.DataFrame(res.json()["data"]["resultsData"]).iloc[:, 1:9]
+        json = await res.json()
+        df = pd.DataFrame(json["data"]["resultsData"]).iloc[:, 1:9]
         df.columns = cols
     return df
 
 
-async def afetch(proxies: json, typ: str, year: str, code: str = 'E07') -> pd.DataFrame:
+async def afetch(proxies: dict, typ: str, year: str, code: str = 'E07') -> pd.DataFrame:
     """异步方式获取结题项目数据
 
     :param proxies: 代理IP，用于突破防爬
